@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:state_managerment_class/model/product_model.dart';
+import 'package:provider/provider.dart';
+import 'package:state_managerment_class/provider/cart_provider.dart';
 
-/// 這個檔案刻意做「多層 widget」
-/// HomePage -> CatalogView -> CategorySection -> ProductList -> ProductTile
 class CatalogView extends StatelessWidget {
   final List<Product> products;
-  final void Function(Product) onAddToCart;
 
   const CatalogView({
     super.key,
     required this.products,
-    required this.onAddToCart,
   });
 
   @override
@@ -20,7 +18,6 @@ class CatalogView extends StatelessWidget {
         CategorySection(
           title: 'Drinks',
           products: products,
-          onAddToCart: onAddToCart, // 參數一路往下傳 #1
         ),
       ],
     );
@@ -30,13 +27,11 @@ class CatalogView extends StatelessWidget {
 class CategorySection extends StatelessWidget {
   final String title;
   final List<Product> products;
-  final void Function(Product) onAddToCart;
 
   const CategorySection({
     super.key,
     required this.title,
     required this.products,
-    required this.onAddToCart,
   });
 
   @override
@@ -50,7 +45,6 @@ class CategorySection extends StatelessWidget {
           const SizedBox(height: 12),
           ProductList(
             products: products,
-            onAddToCart: onAddToCart, // 參數一路往下傳 #2
           ),
         ],
       ),
@@ -60,12 +54,10 @@ class CategorySection extends StatelessWidget {
 
 class ProductList extends StatelessWidget {
   final List<Product> products;
-  final void Function(Product) onAddToCart;
 
   const ProductList({
     super.key,
     required this.products,
-    required this.onAddToCart,
   });
 
   @override
@@ -74,7 +66,6 @@ class ProductList extends StatelessWidget {
       children: products.map((p) {
         return ProductTile(
           product: p,
-          onAddToCart: onAddToCart, // 參數一路往下傳 #3（傳到最底）
         );
       }).toList(),
     );
@@ -83,12 +74,10 @@ class ProductList extends StatelessWidget {
 
 class ProductTile extends StatefulWidget {
   final Product product;
-  final void Function(Product) onAddToCart;
 
   const ProductTile({
     super.key,
     required this.product,
-    required this.onAddToCart,
   });
 
   @override
@@ -99,9 +88,8 @@ class _ProductTileState extends State<ProductTile> {
   bool _justAdded = false;
 
   void _handleAdd() {
-    widget.onAddToCart(widget.product);
+    context.read<CartProvider>().addToCart(widget.product);
 
-    // setState #2：改「本地 UI 狀態」
     setState(() => _justAdded = true);
 
     Future.delayed(const Duration(milliseconds: 600), () {
