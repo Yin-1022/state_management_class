@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:state_managerment_class/model/product_model.dart';
-import 'package:provider/provider.dart';
-import 'package:state_managerment_class/provider/cart_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:state_managerment_class/bloc/cart_bloc.dart';
+import 'package:state_managerment_class/bloc/cart_event.dart';
+import 'package:state_managerment_class/bloc/cart_state.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -13,10 +14,10 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<CartProvider>(
-        builder: (context, cartProvider, _) {
-        final cart = cartProvider.getCart();
-        final total = cartProvider.getTotalPrice();
+    return BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          final cart = state.getCart();
+          final total = state.getTotalPrice();
 
         return Scaffold(
           appBar: AppBar(
@@ -36,7 +37,7 @@ class _CartPageState extends State<CartPage> {
                       subtitle: Text('\$${item.product.price}'),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete_outline),
-                        onPressed: () => context.read<CartProvider>().removeAt(i),
+                        onPressed: () => context.read<CartBloc>().add(RemoveAt(i)),
                       ),
                     );
                   },

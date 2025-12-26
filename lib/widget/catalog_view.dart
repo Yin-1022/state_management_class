@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:state_managerment_class/model/product_model.dart';
-import 'package:provider/provider.dart';
-import 'package:state_managerment_class/provider/cart_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:state_managerment_class/bloc/cart_bloc.dart';
+import 'package:state_managerment_class/bloc/cart_event.dart';
 
 class CatalogView extends StatelessWidget {
   final List<Product> products;
@@ -88,7 +89,7 @@ class _ProductTileState extends State<ProductTile> {
   bool _justAdded = false;
 
   void _handleAdd() {
-    context.read<CartProvider>().addToCart(widget.product);
+    context.read<CartBloc>().add(AddToCart(widget.product));
 
     setState(() => _justAdded = true);
 

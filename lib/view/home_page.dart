@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:state_managerment_class/model/product_model.dart';
 import 'package:state_managerment_class/view/cart_page.dart';
 import 'package:state_managerment_class/widget/catalog_view.dart';
-import 'package:provider/provider.dart';
-import 'package:state_managerment_class/provider/cart_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:state_managerment_class/bloc/cart_bloc.dart';
+import 'package:state_managerment_class/bloc/cart_state.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -25,11 +26,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Catalog (Provider Mgmt)'),
+        title: const Text('Catalog (Bloc Mgmt)'),
         actions: [
-          Consumer<CartProvider>(
-            builder: (context, cartProvider, _) {
-              final cartCount = cartProvider.getCartCount();
+          BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) {
+              final cartCount = state.getCartCount();
 
               return Stack(
                 alignment: Alignment.center,
